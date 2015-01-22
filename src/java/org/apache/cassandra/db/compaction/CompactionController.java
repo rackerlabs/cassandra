@@ -92,7 +92,7 @@ public class CompactionController
      */
     public static Set<SSTableReader> getFullyExpiredSSTables(ColumnFamilyStore cfStore, Set<SSTableReader> compacting, Set<SSTableReader> overlapping, int gcBefore)
     {
-        logger.debug("Checking droppable sstables in {}", cfStore);
+        logger.info("rackspace Checking droppable sstables in {}", cfStore);
 
         if (compacting == null)
             return Collections.<SSTableReader>emptySet();
@@ -102,10 +102,13 @@ public class CompactionController
         long minTimestamp = Long.MAX_VALUE;
 
         for (SSTableReader sstable : overlapping)
+        {
+            logger.info("rackspace overlapping class {}",sstable.toString());
             minTimestamp = Math.min(minTimestamp, sstable.getMinTimestamp());
-
+        }
         for (SSTableReader candidate : compacting)
         {
+            logger.info("rackspace candidate1 class {}",candidate.toString());
             if (candidate.getSSTableMetadata().maxLocalDeletionTime < gcBefore)
                 candidates.add(candidate);
             else
@@ -121,13 +124,15 @@ public class CompactionController
         while (iterator.hasNext())
         {
             SSTableReader candidate = iterator.next();
+            logger.info("rackspace candidate2 class {}",candidate.toString());
             if (candidate.getMaxTimestamp() >= minTimestamp)
             {
+                logger.info("rackspace removing candidate2 class {}",candidate.toString());
                 iterator.remove();
             }
             else
             {
-                logger.debug("Dropping expired SSTable {} (maxLocalDeletionTime={}, gcBefore={})",
+                logger.info("rackspace Dropping expired SSTable {} (maxLocalDeletionTime={}, gcBefore={})",
                              candidate, candidate.getSSTableMetadata().maxLocalDeletionTime, gcBefore);
             }
         }
