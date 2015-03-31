@@ -49,10 +49,12 @@ public class SSTableMetadataViewer
                 Descriptor descriptor = Descriptor.fromFilename(fname);
                 SSTableMetadata metadata = SSTableMetadata.serializer.deserialize(descriptor).left;
 
-                out.printf("SSTable: %s%n", descriptor);
+                out.printf("Rackspace SSTable: %s%n", descriptor);
                 out.printf("Partitioner: %s%n", metadata.partitioner);
                 out.printf("Maximum timestamp: %s%n", metadata.maxTimestamp);
-                out.printf("SSTable max local deletion time: %s%n", metadata.maxLocalDeletionTime);
+                out.printf("Minimum timestamp: %s%n", metadata.minTimestamp);
+                out.printf("SSTable max local deletion time: %s %s %s%n", metadata.maxLocalDeletionTime,
+                          metadata.minTimestamp, metadata.maxTimestamp);
                 out.printf("Compression ratio: %s%n", metadata.compressionRatio);
                 out.printf("Estimated droppable tombstones: %s%n", metadata.getEstimatedDroppableTombstoneRatio((int) (System.currentTimeMillis() / 1000)));
                 out.printf("SSTable Level: %d%n", metadata.sstableLevel);
